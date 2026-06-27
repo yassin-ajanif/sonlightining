@@ -4,6 +4,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+$env:PATH = "$env:USERPROFILE\.dotnet\tools;$env:PATH"
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 $PublishDir = Join-Path $ProjectRoot "publish"
 $ReleaseDir = Join-Path $ProjectRoot "releases"
@@ -17,12 +18,15 @@ try {
         -o $PublishDir `
         /p:Version=$Version
 
-    dnx vpk@1.2.0 pack `
+    $IconPath = Join-Path $ProjectRoot "Assets\faturati.ico"
+
+    vpk pack `
         --packId Sonlighting.GestionCommerciale `
         --packTitle "Solighting" `
         --packVersion $Version `
         --packDir $PublishDir `
         --mainExe GestionCommerciale.exe `
+        --icon $IconPath `
         --outputDir $ReleaseDir
 }
 finally {

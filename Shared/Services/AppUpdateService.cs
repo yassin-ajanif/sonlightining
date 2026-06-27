@@ -1,3 +1,4 @@
+using System.Reflection;
 using GestionCommerciale.Shared.Configuration;
 using Velopack;
 using Velopack.Exceptions;
@@ -17,6 +18,12 @@ public sealed class AppUpdateService : IAppUpdateService
     }
 
     public string? CurrentVersion => GetUpdateManager().CurrentVersion?.ToString();
+
+    public string DisplayVersion => NormalizeVersion(
+        CurrentVersion
+        ?? Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+        ?? Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)
+        ?? "?.?.?");
 
     public bool IsInstalled => GetUpdateManager().IsInstalled;
 
@@ -135,6 +142,15 @@ public sealed class AppUpdateService : IAppUpdateService
     }
 
     private void NotifyStateChanged() => UpdateStateChanged?.Invoke(this, EventArgs.Empty);
+
+    private static string NormalizeVersion(string? version)
+    {
+        if (string.IsNullOrWhiteSpace(version))
+            return "?.?.?";
+
+        var plusIndex = version.IndexOf('+');
+        return plusIndex >= 0 ? version[..plusIndex] : version;
+    }
 
     private UpdateManager GetUpdateManager()
     {

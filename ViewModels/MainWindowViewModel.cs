@@ -32,7 +32,7 @@ public partial class MainWindowViewModel : BaseViewModel
 
     private void RefreshLabels()
     {
-        Title = _locale.T("Win_AppTitle");
+        Title = $"{_locale.T("Win_AppTitle")} v{_updates.DisplayVersion}";
         RefreshUpdateBanner();
     }
 

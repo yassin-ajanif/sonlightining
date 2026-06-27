@@ -178,6 +178,7 @@ internal static class UiTranslationExtras
         ["Pos_LabelRemiseMontant"] = ("Remise montant", "خصم مبلغ"),
         ["Wm_SearchTiers"] = ("Recherche", "بحث"),
         ["Wm_SearchClient"] = ("Rechercher un client…", "ابحث عن عميل…"),
+        ["Wm_SearchMovementClient"] = ("Filtrer par client ou fournisseur…", "تصفية حسب العميل أو المورد…"),
         ["Wm_SearchSupplier"] = ("Rechercher un fournisseur…", "ابحث عن مورد…"),
         ["Wm_RefExample"] = ("Ex. ART-001", "مثال ART-001"),
         ["Wm_Libelle"] = ("Libellé", "التسمية"),

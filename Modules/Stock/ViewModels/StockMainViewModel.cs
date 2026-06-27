@@ -63,6 +63,9 @@ public partial class StockMainViewModel : BaseViewModel
     [ObservableProperty] private string _colBeforeQty = string.Empty;
     [ObservableProperty] private string _colQty = string.Empty;
     [ObservableProperty] private string _colDetail = string.Empty;
+    [ObservableProperty] private string _wmMovementClientSearch = string.Empty;
+
+    public bool IsMovementClientSearchEnabled => SelectedProduit != null;
 
     private void RefreshStockUi()
     {
@@ -86,6 +89,7 @@ public partial class StockMainViewModel : BaseViewModel
         ColBeforeQty = _locale.T("Lbl_ColBeforeQty");
         ColQty = _locale.T("Lbl_ColQty");
         ColDetail = _locale.T("Lbl_ColDetail");
+        WmMovementClientSearch = _locale.T("Wm_SearchMovementClient");
         if (SelectedProduit != null)
             _ = LoadMouvementsAsync(SelectedProduit.Id, CancellationToken.None);
     }
@@ -102,6 +106,8 @@ public partial class StockMainViewModel : BaseViewModel
     [ObservableProperty] private Produit? _selectedProduit;
 
     [ObservableProperty] private string _productSearch = string.Empty;
+
+    [ObservableProperty] private string _movementClientSearch = string.Empty;
 
     [ObservableProperty] private decimal _ajustementDelta;
     [ObservableProperty] private string _ajustementNote = string.Empty;
@@ -137,10 +143,19 @@ public partial class StockMainViewModel : BaseViewModel
     partial void OnSelectedProduitChanged(Produit? value)
     {
         Mouvements.Clear();
+        MovementClientSearch = string.Empty;
+        OnPropertyChanged(nameof(IsMovementClientSearchEnabled));
         if (value == null) return;
         _currentProduitId = value.Id;
         MouvementPagination.CurrentPage = 1;
         _ = LoadMouvementsAsync(value.Id, CancellationToken.None);
+    }
+
+    partial void OnMovementClientSearchChanged(string value)
+    {
+        if (SelectedProduit == null) return;
+        MouvementPagination.CurrentPage = 1;
+        _ = LoadMouvementsAsync(SelectedProduit.Id, CancellationToken.None);
     }
 
     private async Task LoadMouvementsAsync(int produitId, CancellationToken cancellationToken)
@@ -148,7 +163,8 @@ public partial class StockMainViewModel : BaseViewModel
         if (produitId == 0) return;
         await using var db = await _dbFactory.CreateDbContextAsync(cancellationToken);
         var q = db.MouvementsStock.AsNoTracking()
-            .Where(m => m.ProduitId == produitId);
+            .Where(m => m.ProduitId == produitId)
+            .WherePartyNameMatches(db, MovementClientSearch);
         var total = await q.CountAsync(cancellationToken);
         var list = await q
             .OrderByDescending(m => m.CreatedAt)

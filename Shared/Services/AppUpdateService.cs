@@ -43,12 +43,7 @@ public sealed class AppUpdateService : IAppUpdateService
             var mgr = GetUpdateManager();
             if (!mgr.IsInstalled)
             {
-#if DEBUG
-                if (VelopackConfiguration.SimulateUpdateBannerForUiTest)
-                    SetUpdateAvailable(VelopackConfiguration.SimulatedUpdateVersion, downloaded: false);
-                else
-#endif
-                    ClearUpdateState();
+                ClearUpdateState();
                 return;
             }
 
@@ -71,12 +66,7 @@ public sealed class AppUpdateService : IAppUpdateService
         }
         catch (NotInstalledException)
         {
-#if DEBUG
-            if (VelopackConfiguration.SimulateUpdateBannerForUiTest)
-                SetUpdateAvailable(VelopackConfiguration.SimulatedUpdateVersion, downloaded: false);
-            else
-#endif
-                ClearUpdateState();
+            ClearUpdateState();
         }
         catch (Exception)
         {
@@ -91,17 +81,6 @@ public sealed class AppUpdateService : IAppUpdateService
 
     public async Task DownloadAndApplyUpdateAsync(CancellationToken cancellationToken = default)
     {
-#if DEBUG
-        if (VelopackConfiguration.SimulateUpdateBannerForUiTest && !GetUpdateManager().IsInstalled)
-        {
-            await _dialogService.ShowInfoAsync(
-                "Mise à jour (simulation)",
-                "Mode test : la bannière est simulée. Installez via Velopack pour tester les vraies mises à jour.",
-                cancellationToken);
-            return;
-        }
-#endif
-
         try
         {
             var mgr = GetUpdateManager();
@@ -128,10 +107,7 @@ public sealed class AppUpdateService : IAppUpdateService
             if (restart)
                 mgr.ApplyUpdatesAndRestart(asset);
         }
-        catch (NotInstalledException)
-        {
-            // Expected when running from bin/Debug without a Velopack install.
-        }
+       
         catch (Exception ex)
         {
             await _dialogService.ShowErrorAsync(

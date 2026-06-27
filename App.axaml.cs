@@ -114,8 +114,6 @@ public partial class App : Application
         root.SetRoot(loggedIn
             ? Services.GetRequiredService<AppShellViewModel>()
             : Services.GetRequiredService<LoginViewModel>());
-
-        _ = Services.GetRequiredService<IAppUpdateService>().CheckForUpdatesOnStartupAsync(default);
     }
 
     /// <summary>Ensures TrialStartedAt and LicenseKey columns exist on AppSettings for older DBs.</summary>

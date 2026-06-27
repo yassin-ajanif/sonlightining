@@ -4,5 +4,13 @@ public interface IAppUpdateService
 {
     string? CurrentVersion { get; }
     bool IsInstalled { get; }
-    Task CheckForUpdatesOnStartupAsync(CancellationToken cancellationToken = default);
+    bool IsUpdateAvailable { get;}
+    string? AvailableVersion { get; }
+    bool IsUpdateDownloaded { get; }
+    bool IsCheckingForUpdates { get; }
+
+    event EventHandler? UpdateStateChanged;
+
+    Task CheckForUpdatesAsync(CancellationToken cancellationToken = default);
+    Task DownloadAndApplyUpdateAsync(CancellationToken cancellationToken = default);
 }

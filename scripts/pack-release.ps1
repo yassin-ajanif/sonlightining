@@ -19,6 +19,7 @@ try {
 
     dnx vpk@1.2.0 pack `
         --packId Sonlighting.GestionCommerciale `
+        --packTitle "Solighting" `
         --packVersion $Version `
         --packDir $PublishDir `
         --mainExe GestionCommerciale.exe `

@@ -59,6 +59,7 @@ public static class DependencyInjection
         services.AddSingleton<IAvoirWorkflowService, AvoirWorkflowService>();
         services.AddSingleton<IReportService, ReportService>();
         services.AddSingleton<ILicenseService, LicenseService>();
+        services.AddSingleton<IAppUpdateService, AppUpdateService>();
         services.AddSingleton<IPdfService, PdfService>();
         services.AddSingleton<IPdfPrintService, PdfPrintService>();
         services.AddSingleton<IBackupService, BackupService>();

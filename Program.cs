@@ -1,6 +1,7 @@
 using Avalonia;
 using System;
 using System.Threading;
+using Velopack;
 
 namespace GestionCommerciale;
 
@@ -14,6 +15,8 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        VelopackApp.Build().Run();
+
         using var mutex = new Mutex(true, MutexName, out var createdNew);
         if (!createdNew)
             return;

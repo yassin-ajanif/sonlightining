@@ -8,6 +8,7 @@ artifacts*
 _build*
 publish/
 dist/
+releases/
 
 # .NET / NuGet
 *.user

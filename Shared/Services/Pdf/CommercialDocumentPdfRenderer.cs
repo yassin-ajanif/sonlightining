@@ -27,6 +27,7 @@ public static class CommercialDocumentPdfRenderer
     private const float HeaderSectionSpacing = 10f;
     private const float HeaderCompanyFontSize = 16f;
     private const float HeaderDocumentKindFontSize = 17f;
+    private const float PartyNameFontSize = 14f;
     private const float TableFontSize = 9f;
     private const float TableCellPaddingHorizontal = 2f;
 
@@ -168,7 +169,7 @@ public static class CommercialDocumentPdfRenderer
                     var valueCell = r.RelativeItem().AlignBottom();
                     var value = valueCell.Text(line.Value).FontColor(TextPrimary);
                     if (line.EmphasizeValue)
-                        value.Bold().FontSize(11);
+                        value.Bold().FontSize(PartyNameFontSize);
                     else
                         value.FontSize(9);
                 });

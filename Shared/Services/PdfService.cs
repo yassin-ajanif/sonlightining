@@ -629,9 +629,9 @@ public sealed class PdfService : IPdfService
         if (v.ShowDesignation)
             columns.Add(new PdfTableColumn("Désignation", 2.5f, PdfTextAlignment.Start));
         if (v.ShowQuantite)
-            columns.Add(new PdfTableColumn(qtyHeader, 0.25f, PdfTextAlignment.Center));
+            columns.Add(new PdfTableColumn(qtyHeader, 0.30f, PdfTextAlignment.Center));
         if (v.ShowConditionnement)
-            columns.Add(new PdfTableColumn("Ute", 0.30f, PdfTextAlignment.Center));
+            columns.Add(new PdfTableColumn("Ute", 0.25f, PdfTextAlignment.Center));
         if (v.ShowPuHt)
             columns.Add(new PdfTableColumn("PU HT", 0.55f, PdfTextAlignment.Center));
         if (v.ShowTva)

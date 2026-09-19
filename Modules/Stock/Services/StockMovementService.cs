@@ -147,7 +147,10 @@ public sealed class StockMovementService : IStockMovementService
                 var oldPrice = produit.PrixAchatHT;
                 var totalQty = oldQty + entreeDelta;
                 if (totalQty > 0)
+                {
                     produit.PrixAchatHT = (oldQty * oldPrice + entreeDelta * newPrice) / totalQty;
+                    produit.Ppv = Produit.ComputePpvFromPrixAchatHt(produit.PrixAchatHT, produit.Remise);
+                }
             },
             cancellationToken);
     }

@@ -35,6 +35,8 @@ public static class ProduitDisplayQueries
                 CodeBarre = p.CodeBarre,
                 Designation = p.Designation,
                 Unite = p.Unite,
+                Ppv = p.Ppv,
+                Remise = p.Remise,
                 PrixAchatHT = p.PrixAchatHT,
                 PrixVenteHT = p.PrixVenteHT,
                 TauxTVA = p.TauxTVA,

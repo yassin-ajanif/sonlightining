@@ -62,6 +62,8 @@ public partial class ProduitsViewModel : BaseViewModel
     [ObservableProperty] private string _lblBarcode = string.Empty;
     [ObservableProperty] private string _lblUnite = string.Empty;
     [ObservableProperty] private string _lblStockActuel = string.Empty;
+    [ObservableProperty] private string _lblPpv = string.Empty;
+    [ObservableProperty] private string _lblRemise = string.Empty;
     [ObservableProperty] private string _lblPrixAchat = string.Empty;
     [ObservableProperty] private string _lblPrixVente = string.Empty;
     [ObservableProperty] private string _lblPrixAchatTtc = string.Empty;
@@ -97,6 +99,8 @@ public partial class ProduitsViewModel : BaseViewModel
         LblBarcode = _locale.T("Lbl_BarcodeField");
         LblUnite = _locale.T("Lbl_Unite");
         LblStockActuel = _locale.T("Lbl_StockActuelRo");
+        LblPpv = _locale.T("Lbl_Ppv");
+        LblRemise = _locale.T("Lbl_RemisePct");
         LblPrixAchat = _locale.T("Lbl_PrixAchatHt");
         LblPrixVente = _locale.T("Lbl_PrixVenteHt");
         LblPrixAchatTtc = _locale.T("Lbl_PrixAchatTtc");
@@ -143,6 +147,8 @@ public partial class ProduitsViewModel : BaseViewModel
     [ObservableProperty] private string _ficheCodeBarre = string.Empty;
     [ObservableProperty] private string _ficheDesignation = string.Empty;
     [ObservableProperty] private string _ficheUnite = "U";
+    [ObservableProperty] private decimal _fichePpv;
+    [ObservableProperty] private decimal _ficheRemise;
     [ObservableProperty] private decimal _fichePrixAchatHt;
     [ObservableProperty] private decimal _fichePrixVenteHt;
     [ObservableProperty] private decimal _ficheTauxTva = 20;
@@ -150,6 +156,21 @@ public partial class ProduitsViewModel : BaseViewModel
     [ObservableProperty] private decimal _fichePrixVenteTtc;
 
     private bool _syncingTtc;
+    private bool _syncingAchatFromPpvRemise;
+
+    partial void OnFichePpvChanged(decimal value) => RecalcPrixAchatFromPpvRemise();
+
+    partial void OnFicheRemiseChanged(decimal value) => RecalcPrixAchatFromPpvRemise();
+
+    private void RecalcPrixAchatFromPpvRemise()
+    {
+        if (_syncingAchatFromPpvRemise)
+            return;
+
+        _syncingAchatFromPpvRemise = true;
+        FichePrixAchatHt = Produit.ComputePrixAchatHt(FichePpv, FicheRemise);
+        _syncingAchatFromPpvRemise = false;
+    }
 
     partial void OnFichePrixAchatHtChanged(decimal value)
     {
@@ -173,12 +194,7 @@ public partial class ProduitsViewModel : BaseViewModel
 
     partial void OnFichePrixAchatTtcChanged(decimal value)
     {
-        if (!_syncingTtc && FicheTauxTva > 0)
-        {
-            _syncingTtc = true;
-            FichePrixAchatHt = value / (1 + FicheTauxTva / 100m);
-            _syncingTtc = false;
-        }
+        // Prix achat HT is driven by PPV × Remise; TTC is display-only from HT.
     }
 
     partial void OnFichePrixVenteTtcChanged(decimal value)
@@ -252,6 +268,8 @@ public partial class ProduitsViewModel : BaseViewModel
         FicheCodeBarre = string.Empty;
         FicheDesignation = _locale.T("Prod_DraftDesignation");
         FicheUnite = "U";
+        FichePpv = 0;
+        FicheRemise = 0;
         FichePrixAchatHt = 0;
         FichePrixVenteHt = 0;
         FicheTauxTva = 20;
@@ -451,6 +469,8 @@ public partial class ProduitsViewModel : BaseViewModel
             FicheCodeBarre = string.Empty;
             FicheDesignation = string.Empty;
             FicheUnite = "U";
+            FichePpv = 0;
+            FicheRemise = 0;
             FichePrixAchatHt = 0;
             FichePrixVenteHt = 0;
             FicheTauxTva = 20;
@@ -464,7 +484,11 @@ public partial class ProduitsViewModel : BaseViewModel
         FicheCodeBarre = p.CodeBarre ?? string.Empty;
         FicheDesignation = p.Designation;
         FicheUnite = string.IsNullOrWhiteSpace(p.Unite) ? "U" : p.Unite;
+        _syncingAchatFromPpvRemise = true;
+        FichePpv = p.Ppv;
+        FicheRemise = p.Remise;
         FichePrixAchatHt = p.PrixAchatHT;
+        _syncingAchatFromPpvRemise = false;
         FichePrixVenteHt = p.PrixVenteHT;
         FicheTauxTva = p.TauxTVA;
         FicheStockMinimum = p.StockMinimum;
@@ -573,7 +597,9 @@ public partial class ProduitsViewModel : BaseViewModel
                     CodeBarre = codeTrim,
                     Designation = FicheDesignation.Trim(),
                     Unite = string.IsNullOrWhiteSpace(FicheUnite) ? "U" : FicheUnite.Trim(),
-                    PrixAchatHT = FichePrixAchatHt,
+                    Ppv = FichePpv,
+                    Remise = FicheRemise,
+                    PrixAchatHT = Produit.ComputePrixAchatHt(FichePpv, FicheRemise),
                     PrixVenteHT = FichePrixVenteHt,
                     TauxTVA = FicheTauxTva,
                     StockActuel = 0,
@@ -629,7 +655,9 @@ public partial class ProduitsViewModel : BaseViewModel
             entityUpdate.CodeBarre = codeTrim;
             entityUpdate.Designation = FicheDesignation.Trim();
             entityUpdate.Unite = string.IsNullOrWhiteSpace(FicheUnite) ? "U" : FicheUnite.Trim();
-            entityUpdate.PrixAchatHT = FichePrixAchatHt;
+            entityUpdate.Ppv = FichePpv;
+            entityUpdate.Remise = FicheRemise;
+            entityUpdate.PrixAchatHT = Produit.ComputePrixAchatHt(FichePpv, FicheRemise);
             entityUpdate.PrixVenteHT = FichePrixVenteHt;
             entityUpdate.TauxTVA = FicheTauxTva;
             entityUpdate.StockMinimum = FicheStockMinimum;

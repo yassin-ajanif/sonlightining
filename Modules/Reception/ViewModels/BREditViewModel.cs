@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using GestionCommerciale.Modules.Auth.Services;
 using GestionCommerciale.Modules.Stock;
+using GestionCommerciale.Modules.Stock.Models;
 using GestionCommerciale.Modules.CommandeFournisseur.Models;
 using GestionCommerciale.Modules.FactureFournisseur.Services;
 using GestionCommerciale.Modules.FactureFournisseur.ViewModels;
@@ -400,7 +401,8 @@ public partial class BREditViewModel : BaseViewModel
                 Designation = l.Designation,
                 Conditionnement = prod?.Unite ?? string.Empty,
                 QuantiteRecue = l.QuantiteCommandee,
-                PrixUnitaireHt = l.PrixUnitaireHT,
+                // BC stores PPV in PrixUnitaireHT + Remise % → BR uses prix achat after remise.
+                PrixUnitaireHt = Produit.ComputePrixAchatHt(l.PrixUnitaireHT, l.Remise),
                 TauxTva = l.TauxTVA
             });
         }

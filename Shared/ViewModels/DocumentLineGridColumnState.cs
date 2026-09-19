@@ -25,11 +25,11 @@ public partial class DocumentLineGridColumnState : ObservableObject
 
     public GridLength ColRef => ShowReference ? new GridLength(1.15, GridUnitType.Star) : new GridLength(0);
     public GridLength ColDesignation => ShowDesignation ? new GridLength(2.35, GridUnitType.Star) : new GridLength(0);
-    public GridLength ColQte => ShowQuantite ? new GridLength(0.85, GridUnitType.Star) : new GridLength(0);
-    public GridLength ColCond => ShowConditionnement ? new GridLength(0.75, GridUnitType.Star) : new GridLength(0);
-    public GridLength ColPuHt => ShowPuHt ? new GridLength(0.95, GridUnitType.Star) : new GridLength(0);
-    public GridLength ColRemise => EffectiveShowRemise ? new GridLength(0.65, GridUnitType.Star) : new GridLength(0);
-    public GridLength ColTva => ShowTva ? new GridLength(0.65, GridUnitType.Star) : new GridLength(0);
+    public GridLength ColQte => ShowQuantite ? new GridLength(0.55, GridUnitType.Star) : new GridLength(0);
+    public GridLength ColCond => ShowConditionnement ? new GridLength(0.50, GridUnitType.Star) : new GridLength(0);
+    public GridLength ColPuHt => ShowPuHt ? new GridLength(0.55, GridUnitType.Star) : new GridLength(0);
+    public GridLength ColRemise => EffectiveShowRemise ? new GridLength(0.55, GridUnitType.Star) : new GridLength(0);
+    public GridLength ColTva => ShowTva ? new GridLength(0.50, GridUnitType.Star) : new GridLength(0);
     public GridLength ColMontantHt => ShowMontantHt ? new GridLength(0.95, GridUnitType.Star) : new GridLength(0);
     public GridLength ColMontantTtc => ShowMontantTtc ? new GridLength(0.95, GridUnitType.Star) : new GridLength(0);
 

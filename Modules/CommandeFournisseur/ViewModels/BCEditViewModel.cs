@@ -150,7 +150,7 @@ public partial class BCEditViewModel : BaseViewModel
         LblDocColQte = _locale.T("DocLine_ColQte");
         LblDocColCond = _locale.T("DocLine_ColCond");
         WmDocLineUnite = _locale.T("DocLine_WmUnite");
-        LblDocColPuHt = _locale.T("DocLine_ColPuHt");
+        LblDocColPuHt = _locale.T("DocLine_ColPpv");
         LblDocColRemise = _locale.T("DocLine_ColRemise");
         LblDocColTva = _locale.T("DocLine_ColTva");
         LblDocColMontantHt = _locale.T("DocLine_ColMontantHt");
@@ -359,7 +359,8 @@ public partial class BCEditViewModel : BaseViewModel
             Designation = p?.Designation ?? string.Empty,
             Conditionnement = p?.Unite ?? string.Empty,
             QuantiteCommandee = 1,
-            PrixUnitaireHt = p?.PrixAchatHT ?? 0,
+            PrixUnitaireHt = p?.Ppv ?? 0,
+            Remise = p?.Remise ?? 0,
             TauxTva = p?.TauxTVA ?? 20
         });
     }

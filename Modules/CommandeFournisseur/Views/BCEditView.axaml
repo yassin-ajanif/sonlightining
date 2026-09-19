@@ -104,12 +104,12 @@
               </Grid.ColumnDefinitions>
               <TextBlock Grid.Column="0" Text="{Binding LblDocColRef}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0" IsVisible="{Binding LineGridColumns.ShowReference}"/>
               <TextBlock Grid.Column="1" Text="{Binding LblDocColDesignation}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0" IsVisible="{Binding LineGridColumns.ShowDesignation}"/>
-              <TextBlock Grid.Column="2" Text="{Binding LblDocColQte}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0" IsVisible="{Binding LineGridColumns.ShowQuantite}"/>
-              <TextBlock Grid.Column="3" Text="{Binding LblDocColCond}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,0" IsVisible="{Binding LineGridColumns.ShowConditionnement}"/>
-              <TextBlock Grid.Column="4" Text="{Binding LblDocColPuHt}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0" IsVisible="{Binding LineGridColumns.ShowPuHt}"/>
-              <TextBlock Grid.Column="5" Text="{Binding LblDocColRemise}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0" IsVisible="{Binding LineGridColumns.ShowRemise}"/>
-              <TextBlock Grid.Column="6" Text="{Binding LblDocColTva}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0" IsVisible="{Binding LineGridColumns.ShowTva}"/>
-              <TextBlock Grid.Column="7" Text="{Binding LblDocColMontantHt}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,8,0" IsVisible="{Binding LineGridColumns.ShowMontantHt}"/>
+              <TextBlock Grid.Column="2" Text="{Binding LblDocColQte}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,4,0" IsVisible="{Binding LineGridColumns.ShowQuantite}"/>
+              <TextBlock Grid.Column="3" Text="{Binding LblDocColCond}" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,4,0" IsVisible="{Binding LineGridColumns.ShowConditionnement}"/>
+              <TextBlock Grid.Column="4" Text="{Binding LblDocColPuHt}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,4,0" IsVisible="{Binding LineGridColumns.ShowPuHt}"/>
+              <TextBlock Grid.Column="5" Text="{Binding LblDocColRemise}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,4,0" IsVisible="{Binding LineGridColumns.ShowRemise}"/>
+              <TextBlock Grid.Column="6" Text="{Binding LblDocColTva}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,4,0" IsVisible="{Binding LineGridColumns.ShowTva}"/>
+              <TextBlock Grid.Column="7" Text="{Binding LblDocColMontantHt}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,4,0" IsVisible="{Binding LineGridColumns.ShowMontantHt}"/>
               <TextBlock Grid.Column="8" Text="{Binding LblDocColMontantTtc}" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" IsVisible="{Binding LineGridColumns.ShowMontantTtc}"/>
             </Grid>
           </Border>
@@ -146,17 +146,17 @@
                              IsReadOnly="{Binding !$parent[UserControl].((vm:BCEditViewModel)DataContext).CanEdit}"
                              IsVisible="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).LineGridColumns.ShowDesignation}"/>
                     <NumericUpDown Grid.Column="2" ShowButtonSpinner="False" Value="{Binding QuantiteCommandee}" FormatString="0.##" Minimum="0" Increment="1"
-                                   HorizontalAlignment="Stretch" Margin="0,0,8,0" IsEnabled="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).CanEdit}" IsVisible="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).LineGridColumns.ShowQuantite}"/>
-                    <TextBox Grid.Column="3" Text="{Binding Conditionnement}" Watermark="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).WmDocLineUnite}" Padding="6,4" Margin="0,0,8,0"
+                                   MinWidth="0" Padding="2,2" HorizontalAlignment="Stretch" Margin="0,0,4,0" IsEnabled="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).CanEdit}" IsVisible="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).LineGridColumns.ShowQuantite}"/>
+                    <TextBox Grid.Column="3" Text="{Binding Conditionnement}" Watermark="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).WmDocLineUnite}" Padding="2,2" Margin="0,0,4,0" MinWidth="0"
                              IsReadOnly="{Binding !$parent[UserControl].((vm:BCEditViewModel)DataContext).CanEdit}" IsVisible="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).LineGridColumns.ShowConditionnement}"/>
                     <NumericUpDown Grid.Column="4" ShowButtonSpinner="False" Value="{Binding PrixUnitaireHt}" FormatString="0.##" Minimum="0" Increment="0.01"
-                                   HorizontalAlignment="Stretch" Margin="0,0,8,0" IsEnabled="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).CanEdit}" IsVisible="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).LineGridColumns.ShowPuHt}"/>
-                    <NumericUpDown Grid.Column="5" ShowButtonSpinner="False" Value="{Binding Remise}" FormatString="N2" Minimum="0" Maximum="100" Increment="1"
-                                   HorizontalAlignment="Stretch" Margin="0,0,8,0" IsEnabled="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).CanEdit}" IsVisible="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).LineGridColumns.ShowRemise}"/>
+                                   MinWidth="0" Padding="2,2" HorizontalAlignment="Stretch" Margin="0,0,4,0" IsEnabled="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).CanEdit}" IsVisible="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).LineGridColumns.ShowPuHt}"/>
+                    <NumericUpDown Grid.Column="5" ShowButtonSpinner="False" Value="{Binding Remise}" FormatString="0.##" Minimum="0" Maximum="100" Increment="1"
+                                   MinWidth="0" Padding="2,2" HorizontalAlignment="Stretch" Margin="0,0,4,0" IsEnabled="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).CanEdit}" IsVisible="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).LineGridColumns.ShowRemise}"/>
                     <NumericUpDown Grid.Column="6" ShowButtonSpinner="False" Value="{Binding TauxTva}" FormatString="0.##" Minimum="0" Increment="1"
-                                   HorizontalAlignment="Stretch" Margin="0,0,8,0" IsEnabled="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).CanEdit}" IsVisible="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).LineGridColumns.ShowTva}"/>
+                                   MinWidth="0" Padding="2,2" HorizontalAlignment="Stretch" Margin="0,0,4,0" IsEnabled="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).CanEdit}" IsVisible="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).LineGridColumns.ShowTva}"/>
                     <TextBlock Grid.Column="7" Text="{Binding MontantHt, StringFormat=\{0:N2\}}" VerticalAlignment="Center"
-                               HorizontalAlignment="Right" Margin="0,0,8,0" Opacity="0.9" IsVisible="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).LineGridColumns.ShowMontantHt}"/>
+                               HorizontalAlignment="Right" Margin="0,0,4,0" Opacity="0.9" IsVisible="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).LineGridColumns.ShowMontantHt}"/>
                     <TextBlock Grid.Column="8" Text="{Binding MontantTtc, StringFormat=\{0:N2\}}" VerticalAlignment="Center"
                                HorizontalAlignment="Right" Opacity="0.9" IsVisible="{Binding $parent[UserControl].((vm:BCEditViewModel)DataContext).LineGridColumns.ShowMontantTtc}"/>
                   </Grid>

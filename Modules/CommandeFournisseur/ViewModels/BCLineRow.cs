@@ -30,7 +30,9 @@ public partial class BCLineRow : ObservableObject
         Reference = p.Reference;
         Designation = p.Designation;
         Conditionnement = p.Unite;
-        PrixUnitaireHt = p.PrixAchatHT;
+        // PrixUnitaireHt stores PPV; line Remise % comes from the product catalog.
+        PrixUnitaireHt = p.Ppv;
+        Remise = p.Remise;
         TauxTva = p.TauxTVA;
         NotifyMontants();
     }

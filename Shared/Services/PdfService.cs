@@ -184,7 +184,7 @@ public sealed class PdfService : IPdfService
                 FmtMoney(ttc)));
         }
 
-        var (cols, rows) = BuildStandardPdfTable(vis, supportsLineRemise: true, "Qté", lineData);
+        var (cols, rows) = BuildStandardPdfTable(vis, supportsLineRemise: true, "Qté", lineData, puHeader: "PPV");
 
         var docLines = new List<PdfKeyValueLine>
         {
@@ -647,12 +647,13 @@ public sealed class PdfService : IPdfService
         DocumentLineColumnVisibility visibility,
         bool supportsLineRemise,
         string qtyHeader,
-        IReadOnlyList<StandardPdfLine> lines)
+        IReadOnlyList<StandardPdfLine> lines,
+        string puHeader = "PU HT")
     {
         var v = supportsLineRemise ? visibility : visibility with { ShowRemise = false };
-        var columns = BuildStandardColumnList(v, qtyHeader);
+        var columns = BuildStandardColumnList(v, qtyHeader, puHeader);
         if (columns.Count == 0)
-            return BuildStandardPdfTable(DocumentLineColumnVisibility.AllVisible, supportsLineRemise, qtyHeader, lines);
+            return BuildStandardPdfTable(DocumentLineColumnVisibility.AllVisible, supportsLineRemise, qtyHeader, lines, puHeader);
 
         var rows = new List<IReadOnlyList<string>>(lines.Count);
         foreach (var line in lines)
@@ -661,7 +662,7 @@ public sealed class PdfService : IPdfService
         return (columns, rows);
     }
 
-    private static List<PdfTableColumn> BuildStandardColumnList(DocumentLineColumnVisibility v, string qtyHeader)
+    private static List<PdfTableColumn> BuildStandardColumnList(DocumentLineColumnVisibility v, string qtyHeader, string puHeader = "PU HT")
     {
         var columns = new List<PdfTableColumn>();
         if (v.ShowReference)
@@ -673,7 +674,7 @@ public sealed class PdfService : IPdfService
         if (v.ShowConditionnement)
             columns.Add(new PdfTableColumn("Ute", 0.25f, PdfTextAlignment.Center));
         if (v.ShowPuHt)
-            columns.Add(new PdfTableColumn("PU HT", 0.55f, PdfTextAlignment.Center));
+            columns.Add(new PdfTableColumn(puHeader, 0.45f, PdfTextAlignment.Center));
         if (v.ShowTva)
             columns.Add(new PdfTableColumn("Tva", 0.25f, PdfTextAlignment.Center));
         if (v.ShowRemise)

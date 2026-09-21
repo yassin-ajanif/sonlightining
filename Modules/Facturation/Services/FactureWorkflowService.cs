@@ -29,7 +29,7 @@ public sealed class FactureWorkflowService : IFactureWorkflowService
         await db.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdatePaiementAsync(int factureId, int paiementId, decimal montant, DateTime date, ModePaiement mode, string reference, CancellationToken cancellationToken = default)
+    public async Task UpdatePaiementAsync(int factureId, int paiementId, decimal montant, DateTime date, ModePaiement mode, string reference, bool estEncaisse, CancellationToken cancellationToken = default)
     {
         if (montant <= 0)
             throw new InvalidOperationException("Le montant doit être supérieur à 0.");
@@ -50,6 +50,7 @@ public sealed class FactureWorkflowService : IFactureWorkflowService
         p.Date = date;
         p.Mode = mode;
         p.Reference = reference;
+        p.EstEncaisse = estEncaisse;
         await db.SaveChangesAsync(cancellationToken);
     }
 

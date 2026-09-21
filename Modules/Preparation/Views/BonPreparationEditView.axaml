@@ -266,6 +266,10 @@
                   <TextBlock Text="{Binding #ThisView.((vm:BonPreparationEditViewModel)DataContext).LblReference}" Opacity="0.65" FontSize="10"/>
                   <TextBlock Text="{Binding Reference}" VerticalAlignment="Center" MinHeight="24" TextTrimming="CharacterEllipsis" MaxWidth="320"/>
                 </StackPanel>
+                <StackPanel Margin="0,0,14,6" Spacing="1" VerticalAlignment="Bottom">
+                  <TextBlock Text="{Binding #ThisView.((vm:BonPreparationEditViewModel)DataContext).LblEstEncaisse}" Opacity="0.65" FontSize="10"/>
+                  <TextBlock Text="{Binding EstEncaisseLabel}" VerticalAlignment="Center" MinHeight="24"/>
+                </StackPanel>
                 <StackPanel Margin="0,0,0,6" Orientation="Horizontal" Spacing="6" VerticalAlignment="Bottom">
                   <Button Padding="8,6" MinWidth="36" MinHeight="32"
                           ToolTip.Tip="{Binding #ThisView.((vm:BonPreparationEditViewModel)DataContext).PayEditTooltip}"
@@ -309,6 +313,12 @@
                   <TextBox Width="320" MinHeight="32" Padding="8,5" Watermark="{Binding #ThisView.((vm:BonPreparationEditViewModel)DataContext).WmRefShort}" Text="{Binding Reference, Mode=TwoWay}"
                            IsEnabled="{Binding BonPreparationModifiable}"/>
                 </StackPanel>
+                <StackPanel Margin="0,0,10,6" Spacing="1" VerticalAlignment="Bottom">
+                  <CheckBox Content="{Binding #ThisView.((vm:BonPreparationEditViewModel)DataContext).LblEstEncaisse}"
+                            IsChecked="{Binding EstEncaisse}"
+                            IsEnabled="{Binding BonPreparationModifiable}"
+                            MinHeight="32" VerticalAlignment="Bottom"/>
+                </StackPanel>
                 <StackPanel Margin="0,0,0,6" Orientation="Horizontal" Spacing="6" VerticalAlignment="Bottom">
                   <Button Content="{Binding #ThisView.((vm:BonPreparationEditViewModel)DataContext).BtnSave}" Padding="10,6" MinHeight="32"
                           Command="{Binding SaveCommand}" IsEnabled="{Binding BonPreparationModifiable}"/>
@@ -347,6 +357,9 @@
         <StackPanel Margin="0,0,10,6" Spacing="1">
           <TextBlock Text="{Binding LblReference}" Opacity="0.65" FontSize="10"/>
           <TextBox Watermark="{Binding WmRefShort}" Text="{Binding PaiementReference}" Width="320" MinHeight="32" Padding="8,5"/>
+        </StackPanel>
+        <StackPanel Margin="0,0,10,6" Spacing="1" VerticalAlignment="Bottom">
+          <CheckBox Content="{Binding LblEstEncaisse}" IsChecked="{Binding PaiementEstEncaisse}" MinHeight="32" VerticalAlignment="Bottom"/>
         </StackPanel>
         <Button Margin="0,0,0,6" Content="{Binding BtnAddPayment}" Padding="10,6" MinHeight="32" VerticalAlignment="Bottom"
                 Command="{Binding AddPaiementCommand}"/>

@@ -35,7 +35,8 @@ public sealed class ClientAccountStatementService : IClientAccountStatementServi
                     p.Date,
                     p.Montant,
                     p.Mode,
-                    p.Reference
+                    p.Reference,
+                    p.EstEncaisse
                 }).ToList()
             })
             .ToListAsync(cancellationToken);
@@ -58,7 +59,7 @@ public sealed class ClientAccountStatementService : IClientAccountStatementServi
             })
             .ToListAsync(cancellationToken);
 
-        var entries = new List<(DateTime Date, ClientAccountEntryKind Kind, long TieBreakId, string Designation, string Observation, decimal Debit, decimal Credit)>();
+        var entries = new List<(DateTime Date, ClientAccountEntryKind Kind, long TieBreakId, string Designation, string Observation, decimal Debit, decimal Credit, bool AffectsBalance, bool IsImpaye)>();
 
         foreach (var f in factures)
         {
@@ -72,7 +73,9 @@ public sealed class ClientAccountStatementService : IClientAccountStatementServi
                 _locale.Tf("ClientLedger_FactureFmt", f.Numero),
                 string.Empty,
                 ttc,
-                0));
+                0,
+                true,
+                false));
         }
 
         var bonsPreparation = await db.BonsPreparation.AsNoTracking()
@@ -89,7 +92,8 @@ public sealed class ClientAccountStatementService : IClientAccountStatementServi
                     p.Date,
                     p.Montant,
                     p.Mode,
-                    p.Reference
+                    p.Reference,
+                    p.EstEncaisse
                 }).ToList()
             })
             .ToListAsync(cancellationToken);
@@ -106,7 +110,9 @@ public sealed class ClientAccountStatementService : IClientAccountStatementServi
                 _locale.Tf("ClientLedger_BonPreparationFmt", b.Numero),
                 string.Empty,
                 ttc,
-                0));
+                0,
+                true,
+                false));
         }
 
         foreach (var a in avoirs)
@@ -129,15 +135,20 @@ public sealed class ClientAccountStatementService : IClientAccountStatementServi
                 _locale.Tf("ClientLedger_AvoirFmt", a.Numero),
                 observation,
                 0,
-                ttc));
+                ttc,
+                true,
+                false));
         }
 
+        decimal totalImpaye = 0;
         foreach (var f in factures)
         {
             foreach (var p in f.Paiements)
             {
                 if (p.Montant <= 0 || p.Mode == ModePaiement.Credit) continue;
                 var observation = string.IsNullOrWhiteSpace(p.Reference) ? string.Empty : p.Reference.Trim();
+                if (!p.EstEncaisse)
+                    totalImpaye += p.Montant;
                 entries.Add((
                     p.Date.Date,
                     ClientAccountEntryKind.Paiement,
@@ -145,7 +156,9 @@ public sealed class ClientAccountStatementService : IClientAccountStatementServi
                     PaymentDesignation(p.Mode),
                     observation,
                     0,
-                    p.Montant));
+                    p.Montant,
+                    AffectsBalance: p.EstEncaisse,
+                    IsImpaye: !p.EstEncaisse));
             }
         }
 
@@ -155,6 +168,8 @@ public sealed class ClientAccountStatementService : IClientAccountStatementServi
             {
                 if (p.Montant <= 0 || p.Mode == ModePaiement.Credit) continue;
                 var observation = string.IsNullOrWhiteSpace(p.Reference) ? string.Empty : p.Reference.Trim();
+                if (!p.EstEncaisse)
+                    totalImpaye += p.Montant;
                 entries.Add((
                     p.Date.Date,
                     ClientAccountEntryKind.Paiement,
@@ -162,7 +177,9 @@ public sealed class ClientAccountStatementService : IClientAccountStatementServi
                     PaymentDesignation(p.Mode),
                     observation,
                     0,
-                    p.Montant));
+                    p.Montant,
+                    AffectsBalance: p.EstEncaisse,
+                    IsImpaye: !p.EstEncaisse));
             }
         }
 
@@ -176,7 +193,8 @@ public sealed class ClientAccountStatementService : IClientAccountStatementServi
         var rows = new List<ClientAccountStatementRow>(ordered.Count);
         foreach (var e in ordered)
         {
-            balance += e.Debit - e.Credit;
+            if (e.AffectsBalance)
+                balance += e.Debit - e.Credit;
             rows.Add(new ClientAccountStatementRow
             {
                 Date = e.Date,
@@ -186,14 +204,16 @@ public sealed class ClientAccountStatementService : IClientAccountStatementServi
                 Observation = e.Observation,
                 Debit = e.Debit,
                 Credit = e.Credit,
-                Balance = balance
+                Balance = balance,
+                IsImpaye = e.IsImpaye
             });
         }
 
         return new ClientAccountStatementResult
         {
             Rows = rows,
-            SoldeActuel = balance
+            SoldeActuel = balance,
+            TotalImpaye = totalImpaye
         };
     }
 

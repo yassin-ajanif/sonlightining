@@ -1,6 +1,7 @@
 using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using GestionCommerciale.Modules.Facturation.Models;
 using GestionCommerciale.Modules.FactureFournisseur.Models;
 
 namespace GestionCommerciale.Modules.FactureFournisseur.ViewModels;
@@ -11,8 +12,9 @@ public partial class FactureFournisseurPaiementRowViewModel : ObservableObject
 
     private decimal _snapshotMontant;
     private DateTimeOffset _snapshotDate;
-    private GestionCommerciale.Modules.Facturation.Models.ModePaiement _snapshotMode;
+    private ModePaiement _snapshotMode;
     private string _snapshotReference = string.Empty;
+    private bool _snapshotEstEncaisse;
 
     public int Id { get; }
 
@@ -21,10 +23,15 @@ public partial class FactureFournisseurPaiementRowViewModel : ObservableObject
     [ObservableProperty] private bool _isEditing;
     [ObservableProperty] private decimal _montant;
     [ObservableProperty] private DateTimeOffset _date;
-    [ObservableProperty] private GestionCommerciale.Modules.Facturation.Models.ModePaiement _mode;
+    [ObservableProperty] private ModePaiement _mode;
     [ObservableProperty] private string _reference = string.Empty;
+    [ObservableProperty] private bool _estEncaisse = true;
 
     public Array ModesPaiement => _owner.ModesPaiement;
+
+    public string EstEncaisseLabel => EstEncaisse
+        ? _owner.LblEstEncaisse
+        : _owner.LblEstEncaissePending;
 
     public FactureFournisseurPaiementRowViewModel(FactureFournisseurEditViewModel owner, PaiementFournisseur p)
     {
@@ -34,6 +41,7 @@ public partial class FactureFournisseurPaiementRowViewModel : ObservableObject
         Date = new DateTimeOffset(p.Date);
         Mode = p.Mode;
         Reference = p.Reference;
+        EstEncaisse = p.EstEncaisse;
     }
 
     private bool CanSaveRow() => IsEditing && Montant > 0;
@@ -51,6 +59,8 @@ public partial class FactureFournisseurPaiementRowViewModel : ObservableObject
 
     partial void OnMontantChanged(decimal value) => SaveCommand.NotifyCanExecuteChanged();
 
+    partial void OnEstEncaisseChanged(bool value) => OnPropertyChanged(nameof(EstEncaisseLabel));
+
     [RelayCommand(CanExecute = nameof(CanStartEdit))]
     private void StartEdit()
     {
@@ -58,6 +68,7 @@ public partial class FactureFournisseurPaiementRowViewModel : ObservableObject
         _snapshotDate = Date;
         _snapshotMode = Mode;
         _snapshotReference = Reference;
+        _snapshotEstEncaisse = EstEncaisse;
         IsEditing = true;
     }
 
@@ -68,6 +79,7 @@ public partial class FactureFournisseurPaiementRowViewModel : ObservableObject
         Date = _snapshotDate;
         Mode = _snapshotMode;
         Reference = _snapshotReference;
+        EstEncaisse = _snapshotEstEncaisse;
         IsEditing = false;
     }
 

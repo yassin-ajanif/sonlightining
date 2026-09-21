@@ -276,7 +276,7 @@ public partial class ReportingViewModel : BaseViewModel
                 f.Numero,
                 f.DateEcheance,
                 TTC = f.Lignes.Sum(l => l.Quantite * l.PrixUnitaireHT * (1m - l.Remise / 100m) * (1m + l.TauxTVA / 100m)) * (1m - f.RemiseGlobale / 100m),
-                Paye = f.Paiements.Sum(p => (decimal?)p.Montant) ?? 0m
+                Paye = f.Paiements.Where(p => p.EstEncaisse).Sum(p => (decimal?)p.Montant) ?? 0m
             })
             .OrderBy(f => f.DateEcheance)
             .Take(200)

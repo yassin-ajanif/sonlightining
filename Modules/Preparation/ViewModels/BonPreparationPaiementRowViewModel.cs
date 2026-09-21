@@ -14,6 +14,7 @@ public partial class BonPreparationPaiementRowViewModel : ObservableObject
     private DateTimeOffset _snapshotDate;
     private ModePaiement _snapshotMode;
     private string _snapshotReference = string.Empty;
+    private bool _snapshotEstEncaisse;
 
     public int Id { get; }
 
@@ -25,8 +26,13 @@ public partial class BonPreparationPaiementRowViewModel : ObservableObject
     [ObservableProperty] private DateTimeOffset _date;
     [ObservableProperty] private ModePaiement _mode;
     [ObservableProperty] private string _reference = string.Empty;
+    [ObservableProperty] private bool _estEncaisse = true;
 
     public Array ModesPaiement => _owner.ModesPaiement;
+
+    public string EstEncaisseLabel => EstEncaisse
+        ? _owner.LblEstEncaisse
+        : _owner.LblEstEncaissePending;
 
     public BonPreparationPaiementRowViewModel(BonPreparationEditViewModel owner, PaiementBonPreparation p)
     {
@@ -36,6 +42,7 @@ public partial class BonPreparationPaiementRowViewModel : ObservableObject
         Date = new DateTimeOffset(p.Date);
         Mode = p.Mode;
         Reference = p.Reference;
+        EstEncaisse = p.EstEncaisse;
     }
 
     private bool CanSaveRow() => IsEditing && Montant > 0;
@@ -53,6 +60,8 @@ public partial class BonPreparationPaiementRowViewModel : ObservableObject
 
     partial void OnMontantChanged(decimal value) => SaveCommand.NotifyCanExecuteChanged();
 
+    partial void OnEstEncaisseChanged(bool value) => OnPropertyChanged(nameof(EstEncaisseLabel));
+
     [RelayCommand(CanExecute = nameof(CanStartEdit))]
     private void StartEdit()
     {
@@ -60,6 +69,7 @@ public partial class BonPreparationPaiementRowViewModel : ObservableObject
         _snapshotDate = Date;
         _snapshotMode = Mode;
         _snapshotReference = Reference;
+        _snapshotEstEncaisse = EstEncaisse;
         IsEditing = true;
     }
 
@@ -70,6 +80,7 @@ public partial class BonPreparationPaiementRowViewModel : ObservableObject
         Date = _snapshotDate;
         Mode = _snapshotMode;
         Reference = _snapshotReference;
+        EstEncaisse = _snapshotEstEncaisse;
         IsEditing = false;
     }
 

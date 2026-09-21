@@ -383,7 +383,7 @@ public class PerformanceTestService
                     sb = null;
                 }
                 sb = new System.Text.StringBuilder();
-                sb.Append("INSERT INTO Paiements (Id,CreatedAt,UpdatedAt,FactureId,Montant,Date,Mode,Reference) VALUES ");
+                sb.Append("INSERT INTO Paiements (Id,CreatedAt,UpdatedAt,FactureId,Montant,Date,Mode,Reference,EstEncaisse) VALUES ");
             }
             else
             {
@@ -393,7 +393,7 @@ public class PerformanceTestService
             paiementId++;
             var mode = Rng.Next(0, 6);
             var reference = $"REF-{paiementId:D7}";
-            sb!.Append(CultureInfo.InvariantCulture, $"({paiementId},'{now}','{now}',{f.Id},{montant:F2},'{date:yyyy-MM-dd}',{mode},'{reference}')");
+            sb!.Append(CultureInfo.InvariantCulture, $"({paiementId},'{now}','{now}',{f.Id},{montant:F2},'{date:yyyy-MM-dd}',{mode},'{reference}',1)");
             count++;
             batchCount++;
         }

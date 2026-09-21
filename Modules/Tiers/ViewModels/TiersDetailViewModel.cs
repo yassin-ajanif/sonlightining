@@ -22,6 +22,8 @@ public sealed class ClientLedgerDisplayRow
     public string DebitText { get; init; } = string.Empty;
     public string CreditText { get; init; } = string.Empty;
     public string BalanceText { get; init; } = string.Empty;
+    public bool ShowImpayeChip { get; init; }
+    public string ImpayeChipText { get; init; } = string.Empty;
 }
 
 public partial class TiersDetailViewModel : BaseViewModel
@@ -87,6 +89,10 @@ public partial class TiersDetailViewModel : BaseViewModel
     [ObservableProperty] private string _lblLedgerTitle = string.Empty;
     [ObservableProperty] private string _lblSoldeActuel = string.Empty;
     [ObservableProperty] private string _soldeActuelText = string.Empty;
+    [ObservableProperty] private string _lblTotalImpaye = string.Empty;
+    [ObservableProperty] private string _totalImpayeText = string.Empty;
+    [ObservableProperty] private bool _showTotalImpaye;
+    [ObservableProperty] private string _lblImpayeChip = string.Empty;
     [ObservableProperty] private string _btnPdfLedger = string.Empty;
     [ObservableProperty] private string _lblLedgerDate = string.Empty;
     [ObservableProperty] private string _lblLedgerDesignation = string.Empty;
@@ -133,6 +139,8 @@ public partial class TiersDetailViewModel : BaseViewModel
             ? _locale.T("SupplierLedger_Title")
             : _locale.T("ClientLedger_Title");
         LblSoldeActuel = _locale.T("ClientLedger_SoldeActuel");
+        LblTotalImpaye = _locale.T("ClientLedger_TotalImpaye");
+        LblImpayeChip = _locale.T("ClientLedger_Impaye");
         BtnPdfLedger = _locale.T("Btn_Pdf");
         LblLedgerDate = _locale.T("ClientLedger_ColDate");
         LblLedgerDesignation = _locale.T("ClientLedger_ColDesignation");
@@ -173,6 +181,8 @@ public partial class TiersDetailViewModel : BaseViewModel
         TiersId = tiersId;
         LedgerRows.Clear();
         SoldeActuelText = string.Empty;
+        TotalImpayeText = string.Empty;
+        ShowTotalImpaye = false;
         ShowLedger = returnScope == TiersListScope.Clients || returnScope == TiersListScope.Fournisseurs;
         ShowLedgerSaveFirst = tiersId == null && ShowLedger;
         ShowLedgerEmpty = false;
@@ -244,6 +254,8 @@ public partial class TiersDetailViewModel : BaseViewModel
             {
                 LedgerRows.Clear();
                 SoldeActuelText = string.Empty;
+                TotalImpayeText = string.Empty;
+                ShowTotalImpaye = false;
                 ShowLedgerEmpty = false;
             }
         }
@@ -268,11 +280,15 @@ public partial class TiersDetailViewModel : BaseViewModel
                 Observation = row.Observation,
                 DebitText = row.Debit > 0 ? FormatAmount(row.Debit) : string.Empty,
                 CreditText = row.Credit > 0 ? FormatAmount(row.Credit) : string.Empty,
-                BalanceText = FormatAmount(row.Balance)
+                BalanceText = FormatAmount(row.Balance),
+                ShowImpayeChip = row.IsImpaye,
+                ImpayeChipText = LblImpayeChip
             });
         }
 
         SoldeActuelText = FormatAmount(statement.SoldeActuel);
+        ShowTotalImpaye = statement.TotalImpaye > 0.005m;
+        TotalImpayeText = ShowTotalImpaye ? FormatAmount(statement.TotalImpaye) : string.Empty;
         ShowLedgerEmpty = LedgerRows.Count == 0;
     }
 

@@ -93,7 +93,10 @@ public static class SupplierAccountStatementPdfRenderer
                         var bg = i % 2 == 1 ? TableRowAlt : "#FFFFFF";
                         BodyCell(table.Cell().Background(bg), row.Date.ToString("dd/MM/yyyy", Culture));
                         BodyCell(table.Cell().Background(bg), row.Designation);
-                        BodyCell(table.Cell().Background(bg), row.Observation);
+                        var observation = row.IsImpaye
+                            ? (string.IsNullOrWhiteSpace(row.Observation) ? "Impayé" : $"Impayé — {row.Observation}")
+                            : row.Observation;
+                        BodyCell(table.Cell().Background(bg), observation, bold: row.IsImpaye);
                         BodyCell(table.Cell().Background(bg), row.Debit > 0 ? Fmt(row.Debit) : string.Empty, alignRight: true);
                         BodyCell(table.Cell().Background(bg), row.Credit > 0 ? Fmt(row.Credit) : string.Empty, alignRight: true);
                         BodyCell(table.Cell().Background(bg), Fmt(row.Balance), alignRight: true, bold: true);
@@ -104,6 +107,14 @@ public static class SupplierAccountStatementPdfRenderer
                         .Padding(6).AlignRight().Text("TOTAL").Bold();
                     table.Cell().Background(TableHeaderBg).Border(0.5f).BorderColor(TableBorder)
                         .Padding(6).AlignRight().Text(Fmt(statement.SoldeActuel)).Bold();
+
+                    if (statement.TotalImpaye > 0.005m)
+                    {
+                        table.Cell().ColumnSpan(5).Background("#FEE2E2").Border(0.5f).BorderColor(TableBorder)
+                            .Padding(6).AlignRight().Text("TOTAL IMPAYÉ").Bold().FontColor("#B91C1C");
+                        table.Cell().Background("#FEE2E2").Border(0.5f).BorderColor(TableBorder)
+                            .Padding(6).AlignRight().Text(Fmt(statement.TotalImpaye)).Bold().FontColor("#B91C1C");
+                    }
                 });
 
                 page.Footer().AlignCenter().Text(text =>

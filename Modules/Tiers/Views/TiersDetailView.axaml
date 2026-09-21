@@ -56,7 +56,7 @@
     <DockPanel Grid.Column="1" Margin="16,0,0,0" IsVisible="{Binding ShowLedger}">
       <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,8">
         <TextBlock Text="{Binding LblLedgerTitle}" FontWeight="SemiBold" FontSize="16"/>
-        <Grid ColumnDefinitions="*,Auto">
+        <Grid ColumnDefinitions="Auto,12,Auto,*,Auto">
           <Border Grid.Column="0"
                   Padding="8,5"
                   Background="#DBEAFE"
@@ -70,7 +70,21 @@
               <TextBlock Text="{Binding SoldeActuelText}" FontWeight="SemiBold" FontSize="13" Foreground="#1E40AF" VerticalAlignment="Center"/>
             </StackPanel>
           </Border>
-          <Button Grid.Column="1" Content="{Binding BtnPdfLedger}" Command="{Binding ExportLedgerPdfCommand}"/>
+          <Border Grid.Column="2"
+                  Padding="8,5"
+                  Background="#FEE2E2"
+                  BorderBrush="#EF4444"
+                  BorderThickness="1"
+                  CornerRadius="6"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
+                  IsVisible="{Binding ShowTotalImpaye}">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <TextBlock Text="{Binding LblTotalImpaye}" FontWeight="SemiBold" FontSize="12" Foreground="#B91C1C" VerticalAlignment="Center"/>
+              <TextBlock Text="{Binding TotalImpayeText}" FontWeight="SemiBold" FontSize="13" Foreground="#B91C1C" VerticalAlignment="Center"/>
+            </StackPanel>
+          </Border>
+          <Button Grid.Column="4" Content="{Binding BtnPdfLedger}" Command="{Binding ExportLedgerPdfCommand}"/>
         </Grid>
       </StackPanel>
 
@@ -100,7 +114,18 @@
                     <Grid ColumnDefinitions="90,2*,1.2*,90,90,100">
                       <TextBlock Grid.Column="0" Text="{Binding DateText}" FontSize="12" VerticalAlignment="Center"/>
                       <TextBlock Grid.Column="1" Text="{Binding Designation}" FontSize="12" VerticalAlignment="Center" TextWrapping="Wrap"/>
-                      <TextBlock Grid.Column="2" Text="{Binding Observation}" FontSize="12" Classes="subtle" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                      <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                        <Border Padding="6,2"
+                                Background="#FEE2E2"
+                                BorderBrush="#EF4444"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                IsVisible="{Binding ShowImpayeChip}"
+                                VerticalAlignment="Center">
+                          <TextBlock Text="{Binding ImpayeChipText}" FontSize="11" FontWeight="SemiBold" Foreground="#B91C1C"/>
+                        </Border>
+                        <TextBlock Text="{Binding Observation}" FontSize="12" Classes="subtle" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                      </StackPanel>
                       <TextBlock Grid.Column="3" Text="{Binding DebitText}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                       <TextBlock Grid.Column="4" Text="{Binding CreditText}" FontSize="12" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                       <TextBlock Grid.Column="5" Text="{Binding BalanceText}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>

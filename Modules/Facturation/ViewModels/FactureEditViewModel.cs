@@ -105,10 +105,14 @@ public partial class FactureEditViewModel : BaseViewModel
     [ObservableProperty] private decimal _montantPaye;
     [ObservableProperty] private bool _canEditDraft;
 
+    /// <summary>Sum of all payment lines (including non-encashed) for over-TTC checks.</summary>
+    private decimal _montantPaiementsAlloues;
+
     [ObservableProperty] private decimal _paiementMontant;
     [ObservableProperty] private DateTimeOffset _paiementDate = new(DateTime.Today);
     [ObservableProperty] private ModePaiement _paiementMode = ModePaiement.Especes;
     [ObservableProperty] private string _paiementReference = string.Empty;
+    [ObservableProperty] private bool _paiementEstEncaisse = true;
     [ObservableProperty] private FactureLineRow? _selectedLine;
     [ObservableProperty] private string _addLineSearchText = string.Empty;
     [ObservableProperty] private object? _addLineCatalogPick;
@@ -138,6 +142,8 @@ public partial class FactureEditViewModel : BaseViewModel
     [ObservableProperty] private string _lblPaymentDate = string.Empty;
     [ObservableProperty] private string _lblMode = string.Empty;
     [ObservableProperty] private string _lblReference = string.Empty;
+    [ObservableProperty] private string _lblEstEncaisse = string.Empty;
+    [ObservableProperty] private string _lblEstEncaissePending = string.Empty;
     [ObservableProperty] private string _wmRefShort = string.Empty;
     [ObservableProperty] private string _lblNewPayment = string.Empty;
     [ObservableProperty] private string _btnAddPayment = string.Empty;
@@ -202,6 +208,8 @@ public partial class FactureEditViewModel : BaseViewModel
         LblPaymentDate = _locale.T("Lbl_PaymentDate");
         LblMode = _locale.T("Lbl_Mode");
         LblReference = _locale.T("Lbl_Reference");
+        LblEstEncaisse = _locale.T("Lbl_EstEncaisse");
+        LblEstEncaissePending = _locale.T("Lbl_EstEncaissePending");
         WmRefShort = _locale.T("Lbl_RefShort");
         LblNewPayment = _locale.T("Lbl_NewPayment");
         BtnAddPayment = _locale.T("Btn_AddPayment");
@@ -314,6 +322,7 @@ public partial class FactureEditViewModel : BaseViewModel
                 row.Date.DateTime,
                 row.Mode,
                 row.Reference,
+                row.EstEncaisse,
                 cancellationToken);
             await LoadAsync(FactureId, cancellationToken);
         }
@@ -434,8 +443,11 @@ public partial class FactureEditViewModel : BaseViewModel
     {
         if (!FactureId.HasValue) return;
         var fullTtc = ComputeFullPaymentTtc();
-        PaiementMontant = Math.Round(Math.Max(0, fullTtc - MontantPaye), 2);
+        PaiementMontant = Math.Round(Math.Max(0, fullTtc - _montantPaiementsAlloues), 2);
     }
+
+    partial void OnPaiementModeChanged(ModePaiement value) =>
+        PaiementEstEncaisse = ModePaiementDefaults.DefaultEstEncaisse(value);
 
     private decimal ComputeFullPaymentTtc() =>
         DocumentTotalsHelper.FactureTtc(
@@ -547,7 +559,8 @@ public partial class FactureEditViewModel : BaseViewModel
         }
 
         HookLines();
-        MontantPaye = f.Paiements.Sum(p => p.Montant);
+        MontantPaye = f.Paiements.Where(p => p.EstEncaisse).Sum(p => p.Montant);
+        _montantPaiementsAlloues = f.Paiements.Sum(p => p.Montant);
         ReloadPaiementsList(f.Paiements);
         DocumentTotalsHelper.SyncFactureTotalTtc(f);
         if (db.Entry(f).Property(x => x.TotalTtc).IsModified)
@@ -958,7 +971,7 @@ public partial class FactureEditViewModel : BaseViewModel
         }
 
         var fullTtc = ComputeFullPaymentTtc();
-        if (!await ValidatePaymentsAgainstTtcAsync(fullTtc, MontantPaye + PaiementMontant, cancellationToken))
+        if (!await ValidatePaymentsAgainstTtcAsync(fullTtc, _montantPaiementsAlloues + PaiementMontant, cancellationToken))
             return;
 
         try
@@ -970,11 +983,13 @@ public partial class FactureEditViewModel : BaseViewModel
                 Date = PaiementDate.DateTime,
                 Mode = PaiementMode,
                 Reference = PaiementReference,
+                EstEncaisse = PaiementEstEncaisse,
                 CreatedByUserId = _session.UserId
             }, cancellationToken);
             PaiementMontant = 0;
             PaiementReference = string.Empty;
             PaiementDate = new DateTimeOffset(DateTime.Today);
+            PaiementEstEncaisse = ModePaiementDefaults.DefaultEstEncaisse(PaiementMode);
             await LoadAsync(FactureId, cancellationToken);
         }
         catch (Exception ex)

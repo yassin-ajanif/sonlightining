@@ -93,10 +93,7 @@ public static class SupplierAccountStatementPdfRenderer
                         var bg = i % 2 == 1 ? TableRowAlt : "#FFFFFF";
                         BodyCell(table.Cell().Background(bg), row.Date.ToString("dd/MM/yyyy", Culture));
                         BodyCell(table.Cell().Background(bg), row.Designation);
-                        var observation = row.IsImpaye
-                            ? (string.IsNullOrWhiteSpace(row.Observation) ? "Impayé" : $"Impayé — {row.Observation}")
-                            : row.Observation;
-                        BodyCell(table.Cell().Background(bg), observation, bold: row.IsImpaye);
+                        ObservationCell(table.Cell().Background(bg), row.Observation, row.IsImpaye);
                         BodyCell(table.Cell().Background(bg), row.Debit > 0 ? Fmt(row.Debit) : string.Empty, alignRight: true);
                         BodyCell(table.Cell().Background(bg), row.Credit > 0 ? Fmt(row.Credit) : string.Empty, alignRight: true);
                         BodyCell(table.Cell().Background(bg), Fmt(row.Balance), alignRight: true, bold: true);
@@ -148,5 +145,22 @@ public static class SupplierAccountStatementPdfRenderer
             c = c.AlignRight();
         var t = c.Text(text).FontSize(8.5f);
         if (bold) t.Bold();
+    }
+
+    private static void ObservationCell(IContainer cell, string observation, bool isImpaye)
+    {
+        var c = cell.Border(0.5f).BorderColor(TableBorder).Padding(5);
+        if (!isImpaye)
+        {
+            c.Text(observation).FontSize(8.5f);
+            return;
+        }
+
+        c.Text(text =>
+        {
+            text.Span("Impayé").Bold().FontColor("#B91C1C").FontSize(8.5f);
+            if (!string.IsNullOrWhiteSpace(observation))
+                text.Span($" — {observation}").FontSize(8.5f);
+        });
     }
 }

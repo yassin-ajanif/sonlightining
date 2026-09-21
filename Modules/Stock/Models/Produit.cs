@@ -9,7 +9,7 @@ public class Produit : BaseEntity
     public string? CodeBarre { get; set; }
     public string Designation { get; set; } = string.Empty;
     public string Unite { get; set; } = "U";
-    /// <summary>Prix avant remise (PPV). PrixAchatHT = Ppv × (1 − Remise/100).</summary>
+    /// <summary>Prix de vente public (affiché PVP). PrixAchatHT = Ppv × (1 − Remise/100).</summary>
     public decimal Ppv { get; set; }
     /// <summary>Remise en % (0–100). PrixAchatHT = Ppv × (1 − Remise/100).</summary>
     public decimal Remise { get; set; }

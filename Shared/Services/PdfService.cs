@@ -184,7 +184,7 @@ public sealed class PdfService : IPdfService
                 FmtMoney(ttc)));
         }
 
-        var (cols, rows) = BuildStandardPdfTable(vis, supportsLineRemise: true, "Qté", lineData, puHeader: "PPV");
+        var (cols, rows) = BuildStandardPdfTable(vis, supportsLineRemise: true, "Qté", lineData, puHeader: "PVP");
 
         var docLines = new List<PdfKeyValueLine>
         {
